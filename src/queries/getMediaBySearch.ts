@@ -1,23 +1,15 @@
-const {REACT_APP_TMDB_API_KEY} = process.env
+import { axiosGet } from "./axiosInstances"
 
-const getMediaBySearch = (searchTerm: string) => {
+const getMediaBySearch = async (searchTerm: string) => {
 
-  const url = `https://api.themoviedb.org/3/search/tv?query=${searchTerm}&include_adult=false&language=en-US&page=1`;
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${REACT_APP_TMDB_API_KEY}`
-    }
-  };
+  try {
+    const res = await axiosGet(`/3/search/tv?query=${searchTerm}&include_adult=false&language=en-US&page=1`)
+    return res.data
+  }
+    catch(e: any) {
+      console.log("Unable to search database.")
+  }
 
-  const response = fetch(url, options)
-  .then(res => res.json())
-  .then(json => console.log(json))
-  .catch(err => console.error('error:' + err));
-
-  console.log('testing', response)
-  return response
 }
 
 export default getMediaBySearch
