@@ -51,6 +51,7 @@ export default function Home() {
       </Form>
     </Formik>
         <br />
+        {/** If media.length >1, that's the ID we send onto getting credits. If it's longer, the user needs to pick which one they need. */}
         {media && (media.length > 1 ? "multiple" : "one response")}
     </div>
   )
