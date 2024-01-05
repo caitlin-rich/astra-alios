@@ -3,17 +3,18 @@
 import { axiosGet } from "./axiosInstances"
 
 
-export const getCreditsForMedia = async (series_id: string) => {
+export const getCreditsForMedia = async (seriesId: string) => {
     try {
-      const currentSeason = await axiosGet(`/3/tv/${series_id}/credits`)
-      const aggregateSeason = await axiosGet(`/3/tv/${series_id}/aggregate_credits`)
+      const currentSeason = await axiosGet(`/3/tv/${seriesId}/credits`)
+      const aggregateSeason = await axiosGet(`/3/tv/${seriesId}/aggregate_credits`)
 
-      //so then we need to get the person_id list for each response, then turn that into a big array. and then compare to all Star Trek person_ids. Did i think that through already? 
-      
-      
+      const credits = [...currentSeason.data.cast, ...aggregateSeason.data.cast]
+      const creditIds = credits.map(credit => credit.id.toString())
+
+      return creditIds
     }
       catch(e: any) {
-        console.log("Unable to search database.")
+        console.log("Unable to get credits.")
     }
 
   

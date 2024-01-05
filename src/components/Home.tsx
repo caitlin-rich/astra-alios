@@ -1,20 +1,26 @@
-import { Box, Button } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import getMediaBySearch from "../queries/getMediaBySearch";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Field, Form } from 'formik';
 import * as yup from 'yup'
+import ActorCredits from "./ActorCredits";
 
 interface MediaProps {
-  
+  id: string
 }
 
 export default function Home() {
 
-  const [media, setMedia] = useState<object[]>()
+  const [media, setMedia] = useState<MediaProps[]>()
+  const [seriesId, setSeriesId] = useState<string>("000")
+  console.log('series id', seriesId)
+
+  useEffect(() => {
+    media && media.length === 1 && setSeriesId(media[0].id)
+  }, [media])
 
   const handleClick = async (searchTerm: string) => {
     const response = await getMediaBySearch(searchTerm)
-    console.log('in home page', response)
     setMedia(response.results)
   }
 
@@ -29,7 +35,6 @@ export default function Home() {
   //obviously this isn't ideal UX but it's a start
   //unless material UI has a box that'll do the work for me
 
-  console.log(media)
 
 
   return (
@@ -51,8 +56,8 @@ export default function Home() {
       </Form>
     </Formik>
         <br />
-        {/** If media.length >1, that's the ID we send onto getting credits. If it's longer, the user needs to pick which one they need. */}
-        {media && (media.length > 1 ? "multiple" : "one response")}
+        {/** If media.length = 1, that's the ID we send onto getting credits. If it's longer, the user needs to pick which one they need. */}
+        {media && (media.length > 1 ? "multiple response" : <ActorCredits seriesId={seriesId} />)}
     </div>
   )
 }
