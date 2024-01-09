@@ -12,9 +12,10 @@ interface MediaProps {
 export default function Home() {
 
   const [media, setMedia] = useState<MediaProps[]>()
-  const [seriesId, setSeriesId] = useState<string>("000")
+  const [seriesId, setSeriesId] = useState<string | undefined>()
   console.log('series id', seriesId)
 
+  // add series name here for data display reasons - can be its own little object
   useEffect(() => {
     media && media.length === 1 && setSeriesId(media[0].id)
   }, [media])

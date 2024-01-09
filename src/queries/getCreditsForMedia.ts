@@ -8,13 +8,12 @@ export const getCreditsForMedia = async (seriesId: string) => {
       const currentSeason = await axiosGet(`/3/tv/${seriesId}/credits`)
       const aggregateSeason = await axiosGet(`/3/tv/${seriesId}/aggregate_credits`)
 
-      const credits = [...currentSeason.data.cast, ...aggregateSeason.data.cast]
-      const creditIds = credits.map(credit => credit.id.toString())
+      const credits = currentSeason.data.cast.concat(aggregateSeason.data.cast)
 
-      return creditIds
+      return credits
     }
       catch(e: any) {
-        console.log("Unable to get credits.")
+        console.log("Unable to get credits.", e.message)
     }
 
   

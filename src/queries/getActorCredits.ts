@@ -7,7 +7,7 @@ const getActorCredits = async (personId: string) => {
     return res.data
   }
     catch(e: any) {
-      console.log("Unable to search database for Actor Credits.")
+      console.log("Unable to search database for Actor Credits.", e.message)
   }
 
 }

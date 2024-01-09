@@ -2,8 +2,16 @@ import { useEffect, useState } from "react"
 import { getCreditsForMedia } from "../queries/getCreditsForMedia"
 import getActorCredits from "../queries/getActorCredits"
 
-type ActorCreditsType = {
-    seriesId: string
+type SeriesIdType = {
+    seriesId: string | undefined
+}
+
+//TODO fix this type
+type CreditsForMediaType = {
+    id: any,
+    name: any,
+    roles: any
+    character: any,
 }
 
 type TrekIdsType = {
@@ -21,45 +29,61 @@ type TrekIdsType = {
     '82491': string 
 }
 
-export default function ActorCredits({seriesId}: ActorCreditsType) {
+export default function ActorCredits({seriesId}: SeriesIdType) {
 
-    const [creditsForMedia, setCreditsForMedia] = useState<string[]>()
-
-
-
+    const [creditsForMedia, setCreditsForMedia] = useState<CreditsForMediaType[] | undefined>()
+    
     useEffect(() => {
-        const getCredits = async () => {
+        if (seriesId) {
+            const getCredits = async () => {
           const data = await getCreditsForMedia(seriesId)
-          setCreditsForMedia(data)
+
+          if (data) {
+            const castData = data.map((credit: CreditsForMediaType) => {
+                const {id, name, character, roles} = credit
+                return {
+                    id,
+                    name,
+                    character,
+                    roles
+                }
+            })
+            setCreditsForMedia(castData)
+          }
+
+          console.log('IN USE EFFECT', data)
+          setCreditsForMedia(data as unknown as CreditsForMediaType[])
         }
         getCredits()
+    }
       }, [seriesId])
-
-    // need to map through credits for media and get actor credits for each in a use effect!! 
 
     useEffect(()=>{
         const trekIds: TrekIdsType = {
-            '253': 'TOS',
-            '1992': 'TAS',
-            '655': 'TNG',
-            '580': 'DS9',
-            '1855': 'VOY',
-            '314': 'ENT',
-            '67198': 'DIS',
-            '85949': 'PIC',
-            '85948': 'LWD',
-            '103516': 'SNW',
-            '106393': 'PRO',
-            '82491': 'STT' 
+            '253': 'The Original Series',
+            '1992': 'The Animated Series',
+            '655': 'The Next Generation',
+            '580': 'Deep Space Nine',
+            '1855': 'Voyager',
+            '314': 'Enterprise',
+            '67198': 'Discovery',
+            '85949': 'Picard',
+            '85948': 'Lower Decks',
+            '103516': 'Strange New Worlds',
+            '106393': 'Prodigy',
+            '82491': 'Short Treks' 
          }
 
         creditsForMedia && creditsForMedia.map(async credit => {
-            const actorCredits = await getActorCredits(credit)
+            const actorCredits = await getActorCredits(credit.id)
+            
+
             actorCredits && actorCredits.cast.map((show: any) => {
-                const id = show.id
-                Object.keys(trekIds).forEach(key => {
-                    id === key && window.alert(trekIds[key as keyof TrekIdsType])
-                })
+                const id = show.id.toString()
+
+            
+                if (trekIds.hasOwnProperty(id)) console.log(`${credit.name}, who played ${credit.character} in [THE SEARCHED SHOW, ADD THIS] was in ${trekIds[id as keyof TrekIdsType]}`)
+                
             })
         })
     }, [creditsForMedia])
@@ -68,6 +92,6 @@ export default function ActorCredits({seriesId}: ActorCreditsType) {
 
 
   return (
-    <div>{seriesId}</div>
+    <div>Actors Go Here</div>
   )
 }
