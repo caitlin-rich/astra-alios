@@ -7,17 +7,23 @@ import ActorCredits from "./ActorCredits";
 
 interface MediaProps {
   id: string
+  name: string
 }
 
 export default function Home() {
 
   const [media, setMedia] = useState<MediaProps[]>()
-  const [seriesId, setSeriesId] = useState<string | undefined>()
-  console.log('series id', seriesId)
+  const [seriesInfo, setSeriesInfo] = useState<object | undefined>()
 
   // add series name here for data display reasons - can be its own little object
   useEffect(() => {
-    media && media.length === 1 && setSeriesId(media[0].id)
+    media && media.length === 1 &&  
+    setSeriesInfo(
+        { 
+          seriesId: media[0].id,
+          seriesTitle: media[0].name
+        }
+      )
   }, [media])
 
   const handleClick = async (searchTerm: string) => {
@@ -58,7 +64,7 @@ export default function Home() {
     </Formik>
         <br />
         {/** If media.length = 1, that's the ID we send onto getting credits. If it's longer, the user needs to pick which one they need. */}
-        {media && (media.length > 1 ? "multiple response" : <ActorCredits seriesId={seriesId} />)}
+        {seriesInfo && (media && media.length > 1 ? "multiple response" : <ActorCredits seriesInfo={seriesInfo} />)}
     </div>
   )
 }

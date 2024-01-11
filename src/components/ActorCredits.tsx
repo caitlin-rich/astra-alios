@@ -2,8 +2,11 @@ import { useEffect, useState } from "react"
 import { getCreditsForMedia } from "../queries/getCreditsForMedia"
 import getActorCredits from "../queries/getActorCredits"
 
-type SeriesIdType = {
-    seriesId: string | undefined
+type SeriesInfoType = {
+    seriesInfo: {
+        seriesId: string | undefined
+        seriesTitle: string | undefined
+    }
 }
 
 //TODO fix this type
@@ -29,12 +32,15 @@ type TrekIdsType = {
     '82491': string 
 }
 
-export default function ActorCredits({seriesId}: SeriesIdType) {
+//TODO fix this type
+export default function ActorCredits({seriesInfo}: any) {
+
+   const { seriesId, seriesTitle } = seriesInfo
 
     const [creditsForMedia, setCreditsForMedia] = useState<CreditsForMediaType[] | undefined>()
     
     useEffect(() => {
-        if (seriesId) {
+        if (seriesInfo) {
             const getCredits = async () => {
           const data = await getCreditsForMedia(seriesId)
 
@@ -56,7 +62,7 @@ export default function ActorCredits({seriesId}: SeriesIdType) {
         }
         getCredits()
     }
-      }, [seriesId])
+      }, [seriesInfo])
 
     useEffect(()=>{
         const trekIds: TrekIdsType = {
@@ -82,7 +88,7 @@ export default function ActorCredits({seriesId}: SeriesIdType) {
                 const id = show.id.toString()
 
             
-                if (trekIds.hasOwnProperty(id)) console.log(`${credit.name}, who played ${credit.character} in [THE SEARCHED SHOW, ADD THIS] was in ${trekIds[id as keyof TrekIdsType]}`)
+                if (trekIds.hasOwnProperty(id)) console.log(`${credit.name}, who played ${credit.character} in ${seriesTitle} was in ${trekIds[id as keyof TrekIdsType]}`)
                 
             })
         })
