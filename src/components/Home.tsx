@@ -27,6 +27,7 @@ export default function Home() {
   }, [media])
 
   const handleClick = async (searchTerm: string) => {
+    //TODO - add response if no results are found
     const response = await getMediaBySearch(searchTerm)
     setMedia(response.results)
   }
