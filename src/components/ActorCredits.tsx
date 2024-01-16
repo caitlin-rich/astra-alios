@@ -115,7 +115,7 @@ export default function ActorCredits({seriesInfo}: any) {
                 const { actor, id } = info
                 return (
                     <Box>
-                        {actor && `${actor.name}, who played [CHARACTER] in ${seriesTitle} was in Star Trek ${trekIds[id as keyof TrekIdsType]}`}
+                        {actor && actor.roles.map((role: any) => {return `${actor.name}, who played ${role.character} in ${seriesTitle} was in Star Trek ${trekIds[id as keyof TrekIdsType]}`}) }
                     </Box>
                 )
                 // add actors.length-1 thing so if we're still going through the list it's loading? 
