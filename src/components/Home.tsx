@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { Formik, Field, Form } from 'formik';
 import * as yup from 'yup'
 import ActorCredits from "./ActorCredits";
+import MultipleMediaSelection from "./MultipleMediaSelection";
 
-interface MediaProps {
+export interface MediaProps {
   id: string
   name: string
 }
@@ -26,6 +27,7 @@ export default function Home() {
       )
   }, [media])
 
+  //TODO BUG FIX - will not update series info if new search input
   const handleClick = async (searchTerm: string) => {
     //TODO - add response if no results are found
     const response = await getMediaBySearch(searchTerm)
@@ -43,7 +45,8 @@ export default function Home() {
   //obviously this isn't ideal UX but it's a start
   //unless material UI has a box that'll do the work for me
 
-
+  console.log('MEDIA: ', media)
+  console.log('Series Info', seriesInfo)
 
   return (
     <div>
@@ -64,8 +67,7 @@ export default function Home() {
       </Form>
     </Formik>
         <br />
-        {/** If media.length = 1, that's the ID we send onto getting credits. If it's longer, the user needs to pick which one they need. */}
-        {seriesInfo && (media && media.length > 1 ? "multiple response" : <ActorCredits seriesInfo={seriesInfo} />)}
+        {((media && media.length > 1) ? <MultipleMediaSelection media={media} setMedia={setMedia} /> : seriesInfo && <ActorCredits seriesInfo={seriesInfo} />)}
     </div>
   )
 }

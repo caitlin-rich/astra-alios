@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
 import { getCreditsForMedia } from "../queries/getCreditsForMedia"
 import getActorCredits from "../queries/getActorCredits"
-import { Box } from "@material-ui/core"
+import { Card, Typography } from "@material-ui/core"
 
-type SeriesInfoType = {
-    seriesInfo: {
-        seriesId: string | undefined
-        seriesTitle: string | undefined
-    }
-}
+   //TODO
+   //get star trek character info
+   //how to combine duplicates but also show all star treks they were in
+   //how to combine all shows into one line per actor
+   //formatting babey!!!!! 
+   //can i get their picture? 
+   //oh i should link to their TMDB page
+   //goal should be to have 'so and so was in DS9!' with their picture, and then you accordian display the details of each searched show and star trek they were in, maybe like in a little grid
 
 
 //TODO fix this type
@@ -17,6 +19,7 @@ type CreditsForMediaType = {
     name: any,
     roles: any
     character: any,
+    total_episode_count: any
 }
 
 type ActorInfoType = { actor: CreditsForMediaType; id: string }
@@ -68,18 +71,19 @@ export default function ActorCredits({seriesInfo}: any) {
 
           if (data) {
             const castData = data.map((credit: CreditsForMediaType) => {
-                const {id, name, character, roles} = credit
+                const {id, name, character, roles, total_episode_count} = credit
                 return {
                     id,
                     name,
                     character,
-                    roles
+                    roles,
+                    totalEpisodeCount: total_episode_count
                 }
             })
-            setCreditsForMedia(castData)
+            castData && setCreditsForMedia(castData)
           }
 
-          setCreditsForMedia(data as unknown as CreditsForMediaType[])
+         
         }
         getCredits()
     }
@@ -89,34 +93,36 @@ export default function ActorCredits({seriesInfo}: any) {
 
         creditsForMedia && creditsForMedia.map(async credit => {
             const actorCredits = await getActorCredits(credit.id)
-            
 
             actorCredits && actorCredits.cast.map((show: any) => {
                 const id = show.id.toString()
                 const info = {actor: credit, id: id}
+                
                 if (trekIds.hasOwnProperty(id)) {
-                   setActors([...actors, actors.push(info)])
+                    if (!actors.some((each: ActorInfoType) => each.actor && each.actor.id === credit.id)) setActors([...actors, actors.push(info)])
                 }
             })
         })
     }, [creditsForMedia])
 
-   //TODO
-   //how to combine duplicates 
-   //how to combine all shows into one line per actor
-   //get star trek character info
-   //formatting babey!!!!! 
-   //can i get their picture? 
-
+    //oooh do i want to accordian this, or do i want to display it as a TABLE. then it's sortable. and i love tables.
 
   return (
     <div>{actors.length > 0 ? actors.map((info: any) => 
             {
                 const { actor, id } = info
+                const characters = (actor && actor.roles) ? actor.roles.map((role: any) => role.character).join(' and ') : "a role"
                 return (
-                    <Box>
-                        {actor && actor.roles.map((role: any) => {return `${actor.name}, who played ${role.character} in ${seriesTitle} was in Star Trek ${trekIds[id as keyof TrekIdsType]}`}) }
-                    </Box>
+                    <>
+                        <Card variant="outlined">
+                            {actor && 
+                                <Typography>
+                                    {`${actor.name}, who played ${characters} in ${actor.totalEpisodeCount || ""} episodes of ${seriesTitle}, was in Star Trek: ${trekIds[id as keyof TrekIdsType]}`}
+                                </Typography>
+                            }
+                        </Card>
+                        <br></br>
+                    </>
                 )
                 // add actors.length-1 thing so if we're still going through the list it's loading? 
             }
