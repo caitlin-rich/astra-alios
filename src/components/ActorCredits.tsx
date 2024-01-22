@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
-import { getCreditsForMedia } from "../queries/getCreditsForMedia"
-import getActorCredits from "../queries/getActorCredits"
 import { Card, Typography } from "@material-ui/core"
+import { getCreditsForMedia, getActorCredits } from "../queries"
 
    //TODO
    //get star trek character info
@@ -22,7 +21,10 @@ type CreditsForMediaType = {
     total_episode_count: any
 }
 
-type ActorInfoType = { actor: CreditsForMediaType; id: string }
+type ActorInfoType = { 
+    actor: CreditsForMediaType; 
+    id: string 
+}
 
 type TrekIdsType = {
     '253': string,
@@ -97,6 +99,8 @@ export default function ActorCredits({seriesInfo}: any) {
             actorCredits && actorCredits.cast.map((show: any) => {
                 const id = show.id.toString()
                 const info = {actor: credit, id: id}
+
+                //okay info is where we need the full information. let's change the display so it makes more sense. 
                 
                 if (trekIds.hasOwnProperty(id)) {
                     if (!actors.some((each: ActorInfoType) => each.actor && each.actor.id === credit.id)) setActors([...actors, actors.push(info)])
@@ -104,8 +108,6 @@ export default function ActorCredits({seriesInfo}: any) {
             })
         })
     }, [creditsForMedia])
-
-    //oooh do i want to accordian this, or do i want to display it as a TABLE. then it's sortable. and i love tables.
 
   return (
     <div>{actors.length > 0 ? actors.map((info: any) => 
