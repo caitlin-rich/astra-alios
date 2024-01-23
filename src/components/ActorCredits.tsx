@@ -3,9 +3,6 @@ import { Card, Typography } from "@material-ui/core"
 import { getCreditsForMedia, getActorCredits } from "../queries"
 
    //TODO
-   //get star trek character info
-   //how to combine duplicates but also show all star treks they were in
-   //how to combine all shows into one line per actor
    //formatting babey!!!!! 
    //can i get their picture? (yes, see new query)
    //oh i should link to their TMDB page
@@ -20,7 +17,7 @@ type CreditsForMediaType = {
         character: any,
         totalEpisodeCount?: any,
         total_episode_count?: any
-        trekIds: number[]
+        trekIds: {id: number, character: string}[]
 }
 
 
@@ -98,16 +95,19 @@ export default function ActorCredits({seriesInfo}: any) {
             credit.trekIds = []
             const actorId = credit.id
             const actorCredits = await getActorCredits(actorId)
+
+            
             
             actorCredits && actorCredits.cast.map((show: any) => {
                 const showId = show.id.toString()
                 
-                if (trekSeriesIds.hasOwnProperty(showId)) {   
+                if (trekSeriesIds.hasOwnProperty(showId)) { 
+                    const character = show.character
                     if (actors.some((each: CreditsForMediaType) => each.id === credit.id)) {
-                        if (!credit.trekIds.find(each => each === showId)) credit.trekIds.push(showId)
+                        if (!credit.trekIds.find(each => each === showId)) credit.trekIds.push({id: showId, character})
                         return
                     }
-                    credit.trekIds.push(showId)
+                    credit.trekIds.push({id: showId, character})
                     actors.push(credit)
                     setActors([...actors])
                 }
@@ -124,7 +124,8 @@ export default function ActorCredits({seriesInfo}: any) {
                 const { name, roles, totalEpisodeCount, trekIds } = actor
 
                 const characters = (actor && roles) ? roles.map((role: any) => role.character).join(' and ') : "a role"
-                const treks = trekIds.map((id: number) => `Star Trek: ${trekSeriesIds[id as unknown as keyof TrekIdsType]}`).join(' and ')
+                const treks = trekIds.map((trek: {id: number, character: string}) => `Star Trek: ${trekSeriesIds[trek.id as unknown as keyof TrekIdsType]} as ${trek.character}`).join(' and ')
+
 
                 return (
                     <>
