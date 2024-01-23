@@ -18,7 +18,8 @@ type CreditsForMediaType = {
         name: any,
         roles: any
         character: any,
-        totalEpisodeCount: any,
+        totalEpisodeCount?: any,
+        total_episode_count?: any
         trekIds: number[]
 }
 
@@ -70,13 +71,13 @@ export default function ActorCredits({seriesInfo}: any) {
 
           if (data) {
             const castData = data.map((credit: CreditsForMediaType) => {
-                const {id, name, character, roles, totalEpisodeCount} = credit
+                const {id, name, character, roles, total_episode_count} = credit
                 return {
                     id,
                     name,
                     character,
                     roles,
-                    totalEpisodeCount: totalEpisodeCount
+                    totalEpisodeCount: total_episode_count
                 }
             })
             castData && setCreditsForMedia(castData)
@@ -129,7 +130,7 @@ export default function ActorCredits({seriesInfo}: any) {
                     <>
                         <Card variant="outlined">
                                 <Typography>
-                                    {`${name}, who played ${characters} in ${totalEpisodeCount || ""} episodes of ${seriesTitle}, was in ${treks}`}
+                                    {`${name}, who played ${characters} in ${totalEpisodeCount || ""} ${totalEpisodeCount > 1 ? "episodes" : "episode"} of ${seriesTitle}, was in ${treks}`}
                                     
                                 </Typography>
                             
