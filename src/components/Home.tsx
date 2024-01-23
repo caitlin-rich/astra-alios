@@ -51,8 +51,9 @@ export default function Home() {
       }}
     >
       <Form>
-          <label htmlFor="searchTerm">Which show?</label> 
-          <Field id="searchTerm" name="searchTerm" placeholder="Magnifying Glass Icon" />
+          <label htmlFor="searchTerm">Which show would you like to search for?</label> 
+          <br></br>
+          <Field id="searchTerm" name="searchTerm" placeholder="Name of TV Show" />
           <Button type="submit">Search</Button>
       </Form>
     </Formik>
