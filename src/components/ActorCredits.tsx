@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Card, Typography } from "@material-ui/core"
 import { getCreditsForMedia, getActorCredits } from "../queries"
+import { trekSeriesIds, TrekIdsType } from "./trekInfo"
 
    //TODO
    //formatting babey!!!!! 
@@ -9,31 +10,15 @@ import { getCreditsForMedia, getActorCredits } from "../queries"
    //goal should be to have 'so and so was in DS9!' with their picture, and then you accordion display the details of each searched show and star trek they were in, maybe like in a little grid
 
 
-//TODO fix this type
+
 type CreditsForMediaType = {
         id: string,
-        name: any,
-        roles: any
-        character: any,
-        totalEpisodeCount?: any,
-        total_episode_count?: any
+        name: string,
+        roles: string[]
+        character: string,
+        totalEpisodeCount?: number,
+        total_episode_count?: number
         trekIds: {id: number, character: string}[]
-}
-
-
-type TrekIdsType = {
-    '253': string,
-    '1992': string,
-    '655': string,
-    '580': string,
-    '1855': string,
-    '314': string,
-    '67198': string,
-    '85949': string,
-    '85948': string,
-    '103516': string,
-    '106393': string,
-    '82491': string 
 }
 
 //TODO fix this type
@@ -44,23 +29,6 @@ export default function ActorCredits({seriesInfo}: any) {
     const [creditsForMedia, setCreditsForMedia] = useState<CreditsForMediaType[] | undefined>()
     const [actors, setActors] = useState<CreditsForMediaType[]>([])
 
-
-    const trekSeriesIds: TrekIdsType = {
-        '253': 'The Original Series',
-        '1992': 'The Animated Series',
-        '655': 'The Next Generation',
-        '580': 'Deep Space Nine',
-        '1855': 'Voyager',
-        '314': 'Enterprise',
-        '67198': 'Discovery',
-        '85949': 'Picard',
-        '85948': 'Lower Decks',
-        '103516': 'Strange New Worlds',
-        '106393': 'Prodigy',
-        '82491': 'Short Treks' 
-     }
-     
-    
     useEffect(() => {
         if (seriesInfo) {
             const getCredits = async () => {
@@ -87,9 +55,6 @@ export default function ActorCredits({seriesInfo}: any) {
       }, [seriesInfo])
 
     useEffect(()=>{
-
-        //I think this has gotten wildly convoluted and out of hand. I also think this could be its own module. 
-        //let's rewrite this whole thing. i bet a million doll hairs this could be way simpler. 
 
         creditsForMedia && creditsForMedia.map(async credit => {
             credit.trekIds = []
@@ -131,7 +96,7 @@ export default function ActorCredits({seriesInfo}: any) {
                     <>
                         <Card variant="outlined">
                                 <Typography>
-                                    {`${name}, who played ${characters} in ${totalEpisodeCount || ""} ${totalEpisodeCount > 1 ? "episodes" : "episode"} of ${seriesTitle}, was in ${treks}`}
+                                    {`${name}, who played ${characters} in ${totalEpisodeCount || ""} ${totalEpisodeCount && totalEpisodeCount > 1 ? "episodes of" : "episode of"} ${seriesTitle}, was in ${treks}`}
                                     
                                 </Typography>
                             

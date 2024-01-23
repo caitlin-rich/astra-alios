@@ -1,46 +1,14 @@
-# Getting Started with Create React App
+# Ad Astra per Alios
+###### To the stars, through others
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Finally, an app that answers the age old question: "Hey, was that actor in Star Trek?" 
 
-## Available Scripts
+Utilizes the [TMDB API](https://developer.themoviedb.org/reference/intro/getting-started) to pull actor credits and show data. 
 
-In the project directory, you can run:
+Currently at the very earliest stages of function - it's ugly, there are bugs I'm still discovering, but it works. 
 
-### `npm start`
+## Known Issues/Bugs/Updates Needed
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+* The API has rate limits on searches, but I need to search very high volumes of data. I've solved this by adding a timer so I can only run so many searches at once, but there are a lot of cons to this approach - namely, I don't know when the search is finished, and I'm struggling to figure out how to switch the Loading indicator to 'No Results' if there are truly no results. 
+* TV Shows only - movies are coming soon. 
+* In dire need of a layout update now that the majority of the information I want comes through. 
