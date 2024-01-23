@@ -12,3 +12,4 @@ Currently at the very earliest stages of function - it's ugly, there are bugs I'
 * The API has rate limits on searches, but I need to search very high volumes of data. I've solved this by adding a timer so I can only run so many searches at once, but there are a lot of cons to this approach - namely, I don't know when the search is finished, and I'm struggling to figure out how to switch the Loading indicator to 'No Results' if there are truly no results. 
 * TV Shows only - movies are coming soon. 
 * In dire need of a layout update now that the majority of the information I want comes through. 
+* Deployment through GitHub pages is funky. A great opportunity to learn about deployment workflows. 
