@@ -1,5 +1,5 @@
 import { Button } from "@material-ui/core";
-import getMediaBySearch from "../queries/getMediaBySearch";
+import { getMediaBySearch } from "../queries";
 import { useEffect, useState } from "react";
 import { Formik, Field, Form } from 'formik';
 import * as yup from 'yup'

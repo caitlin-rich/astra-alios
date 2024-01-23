@@ -7,24 +7,21 @@ import { getCreditsForMedia, getActorCredits } from "../queries"
    //how to combine duplicates but also show all star treks they were in
    //how to combine all shows into one line per actor
    //formatting babey!!!!! 
-   //can i get their picture? 
+   //can i get their picture? (yes, see new query)
    //oh i should link to their TMDB page
-   //goal should be to have 'so and so was in DS9!' with their picture, and then you accordian display the details of each searched show and star trek they were in, maybe like in a little grid
+   //goal should be to have 'so and so was in DS9!' with their picture, and then you accordion display the details of each searched show and star trek they were in, maybe like in a little grid
 
 
 //TODO fix this type
 type CreditsForMediaType = {
-    id: any,
-    name: any,
-    roles: any
-    character: any,
-    total_episode_count: any
+        id: string,
+        name: any,
+        roles: any
+        character: any,
+        totalEpisodeCount: any,
+        trekIds: number[]
 }
 
-type ActorInfoType = { 
-    actor: CreditsForMediaType; 
-    id: string 
-}
 
 type TrekIdsType = {
     '253': string,
@@ -47,10 +44,10 @@ export default function ActorCredits({seriesInfo}: any) {
    const { seriesId, seriesTitle } = seriesInfo
 
     const [creditsForMedia, setCreditsForMedia] = useState<CreditsForMediaType[] | undefined>()
-    const [actors, setActors] = useState<any>([])
+    const [actors, setActors] = useState<CreditsForMediaType[]>([])
 
 
-    const trekIds: TrekIdsType = {
+    const trekSeriesIds: TrekIdsType = {
         '253': 'The Original Series',
         '1992': 'The Animated Series',
         '655': 'The Next Generation',
@@ -73,13 +70,13 @@ export default function ActorCredits({seriesInfo}: any) {
 
           if (data) {
             const castData = data.map((credit: CreditsForMediaType) => {
-                const {id, name, character, roles, total_episode_count} = credit
+                const {id, name, character, roles, totalEpisodeCount} = credit
                 return {
                     id,
                     name,
                     character,
                     roles,
-                    totalEpisodeCount: total_episode_count
+                    totalEpisodeCount: totalEpisodeCount
                 }
             })
             castData && setCreditsForMedia(castData)
@@ -93,40 +90,53 @@ export default function ActorCredits({seriesInfo}: any) {
 
     useEffect(()=>{
 
+        //I think this has gotten wildly convoluted and out of hand. I also think this could be its own module. 
+        //let's rewrite this whole thing. i bet a million doll hairs this could be way simpler. 
+
         creditsForMedia && creditsForMedia.map(async credit => {
-            const actorCredits = await getActorCredits(credit.id)
-
+            credit.trekIds = []
+            const actorId = credit.id
+            const actorCredits = await getActorCredits(actorId)
+            
             actorCredits && actorCredits.cast.map((show: any) => {
-                const id = show.id.toString()
-                const info = {actor: credit, id: id}
-
-                //okay info is where we need the full information. let's change the display so it makes more sense. 
+                const showId = show.id.toString()
                 
-                if (trekIds.hasOwnProperty(id)) {
-                    if (!actors.some((each: ActorInfoType) => each.actor && each.actor.id === credit.id)) setActors([...actors, actors.push(info)])
+                if (trekSeriesIds.hasOwnProperty(showId)) {   
+                    if (actors.some((each: CreditsForMediaType) => each.id === credit.id)) {
+                        if (!credit.trekIds.find(each => each === showId)) credit.trekIds.push(showId)
+                        return
+                    }
+                    credit.trekIds.push(showId)
+                    actors.push(credit)
+                    setActors([...actors])
                 }
             })
         })
     }, [creditsForMedia])
 
-  return (
-    <div>{actors.length > 0 ? actors.map((info: any) => 
+
+
+
+  return (  
+    <div>{actors.length > 0 ? actors.map((actor: CreditsForMediaType) => 
             {
-                const { actor, id } = info
-                const characters = (actor && actor.roles) ? actor.roles.map((role: any) => role.character).join(' and ') : "a role"
+                const { name, roles, totalEpisodeCount, trekIds } = actor
+
+                const characters = (actor && roles) ? roles.map((role: any) => role.character).join(' and ') : "a role"
+                const treks = trekIds.map((id: number) => `Star Trek: ${trekSeriesIds[id as unknown as keyof TrekIdsType]}`).join(' and ')
+
                 return (
                     <>
                         <Card variant="outlined">
-                            {actor && 
                                 <Typography>
-                                    {`${actor.name}, who played ${characters} in ${actor.totalEpisodeCount || ""} episodes of ${seriesTitle}, was in Star Trek: ${trekIds[id as keyof TrekIdsType]}`}
+                                    {`${name}, who played ${characters} in ${totalEpisodeCount || ""} episodes of ${seriesTitle}, was in ${treks}`}
+                                    
                                 </Typography>
-                            }
+                            
                         </Card>
                         <br></br>
                     </>
                 )
-                // add actors.length-1 thing so if we're still going through the list it's loading? 
             }
         ) : "LOADING"}</div>
   )
