@@ -30,6 +30,7 @@ export default function Home() {
   //TODO BUG FIX - will not update series info if new search input
   const handleClick = async (searchTerm: string) => {
     //TODO - add response if no results are found
+    setMedia(undefined)
     const response = await getMediaBySearch(searchTerm)
     if (!response) return
     setMedia(response.results)
